@@ -1,10 +1,13 @@
 {
   "name": "google",
   "displayName": "Google",
-  "purpose": "The person's Google Calendar, Drive and Gmail",
+  "purpose": "The person's Google Calendar, Drive, Docs, Sheets, Slides and Gmail",
   "hosts": [
     "www.googleapis.com",
-    "gmail.googleapis.com"
+    "gmail.googleapis.com",
+    "docs.googleapis.com",
+    "sheets.googleapis.com",
+    "slides.googleapis.com"
   ],
   "connect": {
     "kind": "oauth2",
@@ -16,12 +19,18 @@
         "read": [
           "https://www.googleapis.com/auth/calendar.readonly",
           "https://www.googleapis.com/auth/drive.readonly",
-          "https://www.googleapis.com/auth/gmail.readonly"
+          "https://www.googleapis.com/auth/gmail.readonly",
+          "https://www.googleapis.com/auth/documents.readonly",
+          "https://www.googleapis.com/auth/spreadsheets.readonly",
+          "https://www.googleapis.com/auth/presentations.readonly"
         ],
         "write": [
           "https://www.googleapis.com/auth/calendar.events",
           "https://www.googleapis.com/auth/drive.file",
-          "https://www.googleapis.com/auth/gmail.send"
+          "https://www.googleapis.com/auth/gmail.send",
+          "https://www.googleapis.com/auth/documents",
+          "https://www.googleapis.com/auth/spreadsheets",
+          "https://www.googleapis.com/auth/presentations"
         ]
       },
       "authParams": {
@@ -39,7 +48,10 @@
         "paths": [
           "/calendar/v3/**",
           "/drive/v3/**",
-          "/gmail/v1/**"
+          "/gmail/v1/**",
+          "/v1/documents/**",
+          "/v4/spreadsheets/**",
+          "/v1/presentations/**"
         ]
       },
       {
@@ -82,8 +94,36 @@
         "paths": [
           "/gmail/v1/users/me/messages/send"
         ]
+      },
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/v1/documents",
+          "/v1/documents/*"
+        ]
+      },
+      {
+        "methods": [
+          "POST",
+          "PUT"
+        ],
+        "paths": [
+          "/v4/spreadsheets",
+          "/v4/spreadsheets/**"
+        ]
+      },
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/v1/presentations",
+          "/v1/presentations/*"
+        ]
       }
     ]
   },
-  "guide": "Google Calendar v3, Drive v3 and Gmail v1, as the person.\n\n```sh\n# Calendar: the next events\ncurl -s \"https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=$(date -u +%Y-%m-%dT%H:%M:%SZ)&singleEvents=true&orderBy=startTime&maxResults=10\"\n# Drive: find files\ncurl -s 'https://www.googleapis.com/drive/v3/files?q=name+contains+%27roadmap%27&fields=files(id,name,mimeType,modifiedTime)'\n# Drive: export a Google Doc as text\ncurl -s 'https://www.googleapis.com/drive/v3/files/FILE_ID/export?mimeType=text/plain'\n# Gmail: recent messages, then one\ncurl -s 'https://gmail.googleapis.com/gmail/v1/users/me/messages?q=newer_than:2d&maxResults=10'\ncurl -s 'https://gmail.googleapis.com/gmail/v1/users/me/messages/MSG_ID?format=metadata&metadataHeaders=Subject&metadataHeaders=From'\n```\n\nCreating an event, uploading a file or sending a mail asks the person first unless they allowed changes."
+  "guide": "Google Calendar v3, Drive v3, Docs v1, Sheets v4, Slides v1 and Gmail v1, as the person. A Doc, Sheet or Slides file's id is the long part of its URL (`/d/<ID>/`).\n\n```sh\n# Calendar: the next events\ncurl -s \"https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=$(date -u +%Y-%m-%dT%H:%M:%SZ)&singleEvents=true&orderBy=startTime&maxResults=10\"\n# Drive: find files (Docs, Sheets, Slides included)\ncurl -s 'https://www.googleapis.com/drive/v3/files?q=name+contains+%27roadmap%27&fields=files(id,name,mimeType,modifiedTime,webViewLink)'\n# Drive: a Doc as text, a Sheet as CSV (first tab), Slides as text\ncurl -s 'https://www.googleapis.com/drive/v3/files/FILE_ID/export?mimeType=text/plain'\ncurl -s 'https://www.googleapis.com/drive/v3/files/FILE_ID/export?mimeType=text/csv'\n# Docs: the structure (headings, tables); then an edit\ncurl -s 'https://docs.googleapis.com/v1/documents/DOC_ID'\ncurl -s -X POST 'https://docs.googleapis.com/v1/documents/DOC_ID:batchUpdate' -H 'Content-Type: application/json' \\\n  -d '{\"requests\":[{\"insertText\":{\"endOfSegmentLocation\":{},\"text\":\"\\nNotes from today\"}}]}'\n# Sheets: the tabs, a range, then write or append rows\ncurl -s 'https://sheets.googleapis.com/v4/spreadsheets/SHEET_ID?fields=sheets.properties'\ncurl -s 'https://sheets.googleapis.com/v4/spreadsheets/SHEET_ID/values/Sheet1!A1:F50'\ncurl -s -X POST 'https://sheets.googleapis.com/v4/spreadsheets/SHEET_ID/values/Sheet1!A1:append?valueInputOption=USER_ENTERED' \\\n  -H 'Content-Type: application/json' -d '{\"values\":[[\"2026-10-23\",\"done\"]]}'\n# Slides: every slide's text\ncurl -s 'https://slides.googleapis.com/v1/presentations/PRES_ID?fields=slides(objectId,pageElements(shape(text(textElements(textRun(content))))))'\n# Gmail: recent messages, then one\ncurl -s 'https://gmail.googleapis.com/gmail/v1/users/me/messages?q=newer_than:2d&maxResults=10'\ncurl -s 'https://gmail.googleapis.com/gmail/v1/users/me/messages/MSG_ID?format=metadata&metadataHeaders=Subject&metadataHeaders=From'\n```\n\nCreating an event, editing a Doc, Sheet or Slides, uploading a file or sending a mail asks the person first unless they allowed changes."
 }

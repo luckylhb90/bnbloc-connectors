@@ -13,10 +13,11 @@ it).
 | `connectors/notion.json` | Notion pages and databases | an internal integration's secret |
 | `connectors/linear.json` | Linear GraphQL | a personal API key |
 | `connectors/figma.json` | Figma files and comments | a personal access token |
-| `connectors/google.json` | Google Calendar, Drive and Gmail | Google OAuth (set `clientId`; the client secret on the admin page) |
+| `connectors/google.json` | Google Calendar, Drive, Docs, Sheets, Slides and Gmail | Google OAuth (set `clientId`; the client secret on the admin page) |
 
 Google's APIs share `www.googleapis.com`, and a host belongs to one
-connector, so one Google connector covers Calendar, Drive and Gmail.
+connector, so one Google connector covers Calendar, Drive, Docs, Sheets,
+Slides and Gmail: one sign-in for all of them.
 
 OAuth apps register the redirect URI
 `<your bnbloc origin>/v1/component-callbacks/connections/oauth`.
@@ -24,7 +25,7 @@ OAuth apps register the redirect URI
 ## Google OAuth client
 
 1. Google Cloud console → **APIs & Services → Library**: enable the Google
-   Calendar API, Google Drive API and Gmail API.
+   Calendar, Drive, Docs, Sheets, Slides and Gmail APIs.
 2. **OAuth consent screen**: user type *Internal* when everyone signs in
    with your Google Workspace; otherwise *External* in *Testing*, with each
    member's Google account added as a test user (Gmail and Drive read are
@@ -37,7 +38,8 @@ OAuth apps register the redirect URI
    `clientId` set, enter the client secret, enable it.
 
 The connections service reaches `accounts.google.com`,
-`oauth2.googleapis.com`, `www.googleapis.com` and `gmail.googleapis.com`
+`oauth2.googleapis.com` and the connector's hosts (`www`, `gmail`, `docs`,
+`sheets` and `slides.googleapis.com`)
 (the sign-in, the token refreshes and, unless the connector sends from the
 members' computers, the calls).
 
