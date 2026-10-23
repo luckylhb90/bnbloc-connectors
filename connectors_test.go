@@ -10,7 +10,7 @@ import (
 )
 
 // Every sample is a valid connector, with no field the schema does not
-// know, and reads with GET.
+// know, whose first read rule reads.
 func TestSamplesAreValidConnectors(t *testing.T) {
 	files, _ := filepath.Glob("connectors/*.json")
 	if len(files) == 0 {
@@ -30,8 +30,8 @@ func TestSamplesAreValidConnectors(t *testing.T) {
 		if err := c.Validate(); err != nil {
 			t.Fatalf("%s: %v", f, err)
 		}
-		if c.Classify("GET", firstReadPath(c), nil) != connector.Read {
-			t.Errorf("%s: a GET of its read paths is not a read", f)
+		if m, body := firstReadRequest(c); c.Classify(m, firstReadPath(c), body) != connector.Read {
+			t.Errorf("%s: a request of its first read rule is not a read", f)
 		}
 		if c.Enabled {
 			t.Errorf("%s: a sample is added disabled", f)

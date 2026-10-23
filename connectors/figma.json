@@ -1,0 +1,41 @@
+{
+  "name": "figma",
+  "displayName": "Figma",
+  "purpose": "Files, frames and comments in Figma",
+  "hosts": [
+    "api.figma.com"
+  ],
+  "connect": {
+    "kind": "apiKey",
+    "apiKey": {
+      "in": "header",
+      "name": "X-Figma-Token",
+      "help": "Figma → Settings → Security → Personal access tokens"
+    }
+  },
+  "policy": {
+    "read": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "paths": [
+          "/v1/**"
+        ]
+      }
+    ],
+    "write": [
+      {
+        "methods": [
+          "POST",
+          "DELETE"
+        ],
+        "paths": [
+          "/v1/files/*/comments",
+          "/v1/files/*/comments/**"
+        ]
+      }
+    ]
+  },
+  "guide": "The Figma REST API (https://www.figma.com/developers/api), as the person.\n\n```sh\ncurl -s https://api.figma.com/v1/me\ncurl -s 'https://api.figma.com/v1/files/FILE_KEY?depth=2'\ncurl -s 'https://api.figma.com/v1/images/FILE_KEY?ids=NODE_ID&format=png'\ncurl -s https://api.figma.com/v1/files/FILE_KEY/comments\n```\n\nA comment asks the person first unless they allowed changes."
+}

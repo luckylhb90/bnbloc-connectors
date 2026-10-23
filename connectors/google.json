@@ -1,0 +1,89 @@
+{
+  "name": "google",
+  "displayName": "Google",
+  "purpose": "The person's Google Calendar, Drive and Gmail",
+  "hosts": [
+    "www.googleapis.com",
+    "gmail.googleapis.com"
+  ],
+  "connect": {
+    "kind": "oauth2",
+    "oauth2": {
+      "issuer": "https://accounts.google.com",
+      "clientId": "SET-YOUR-CLIENT-ID.apps.googleusercontent.com",
+      "clientAuth": "post",
+      "scopes": {
+        "read": [
+          "https://www.googleapis.com/auth/calendar.readonly",
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/gmail.readonly"
+        ],
+        "write": [
+          "https://www.googleapis.com/auth/calendar.events",
+          "https://www.googleapis.com/auth/drive.file",
+          "https://www.googleapis.com/auth/gmail.send"
+        ]
+      },
+      "authParams": {
+        "access_type": "offline",
+        "prompt": "consent"
+      }
+    }
+  },
+  "policy": {
+    "read": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "paths": [
+          "/calendar/v3/**",
+          "/drive/v3/**",
+          "/gmail/v1/**"
+        ]
+      },
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/calendar/v3/freeBusy"
+        ]
+      }
+    ],
+    "write": [
+      {
+        "methods": [
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ],
+        "paths": [
+          "/calendar/v3/calendars/*/events",
+          "/calendar/v3/calendars/*/events/**"
+        ]
+      },
+      {
+        "methods": [
+          "POST",
+          "PATCH"
+        ],
+        "paths": [
+          "/upload/drive/v3/files",
+          "/drive/v3/files",
+          "/drive/v3/files/*"
+        ]
+      },
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/gmail/v1/users/me/messages/send"
+        ]
+      }
+    ]
+  },
+  "guide": "Google Calendar v3, Drive v3 and Gmail v1, as the person.\n\n```sh\n# Calendar: the next events\ncurl -s \"https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=$(date -u +%Y-%m-%dT%H:%M:%SZ)&singleEvents=true&orderBy=startTime&maxResults=10\"\n# Drive: find files\ncurl -s 'https://www.googleapis.com/drive/v3/files?q=name+contains+%27roadmap%27&fields=files(id,name,mimeType,modifiedTime)'\n# Drive: export a Google Doc as text\ncurl -s 'https://www.googleapis.com/drive/v3/files/FILE_ID/export?mimeType=text/plain'\n# Gmail: recent messages, then one\ncurl -s 'https://gmail.googleapis.com/gmail/v1/users/me/messages?q=newer_than:2d&maxResults=10'\ncurl -s 'https://gmail.googleapis.com/gmail/v1/users/me/messages/MSG_ID?format=metadata&metadataHeaders=Subject&metadataHeaders=From'\n```\n\nCreating an event, uploading a file or sending a mail asks the person first unless they allowed changes."
+}

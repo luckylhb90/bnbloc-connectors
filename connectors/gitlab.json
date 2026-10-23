@@ -1,0 +1,54 @@
+{
+  "name": "gitlab",
+  "displayName": "GitLab",
+  "purpose": "Projects, merge requests and issues on gitlab.com",
+  "hosts": [
+    "gitlab.com"
+  ],
+  "connect": {
+    "kind": "apiKey",
+    "apiKey": {
+      "in": "header",
+      "name": "PRIVATE-TOKEN",
+      "help": "gitlab.com → Preferences → Access tokens (scope read_api, or api for changes)"
+    }
+  },
+  "policy": {
+    "read": [
+      {
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "paths": [
+          "/api/v4/**"
+        ]
+      },
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/api/graphql"
+        ],
+        "body": "^\\s*\\{\\s*\"query\"\\s*:\\s*\"\\s*(query\\b|\\{)"
+      }
+    ],
+    "write": [
+      {
+        "methods": [
+          "POST",
+          "PUT",
+          "DELETE"
+        ],
+        "paths": [
+          "/api/v4/**"
+        ]
+      }
+    ]
+  },
+  "cliEnv": {
+    "GITLAB_TOKEN": "connected"
+  },
+  "guide": "The GitLab REST API v4 (https://docs.gitlab.com/ee/api/rest/), as the person.\n\n```sh\ncurl -s https://gitlab.com/api/v4/user\ncurl -s 'https://gitlab.com/api/v4/merge_requests?scope=assigned_to_me&state=opened'\ncurl -s 'https://gitlab.com/api/v4/projects/GROUP%2FPROJECT/issues?state=opened&per_page=20'\n```\n\nA comment, a merge or a new issue asks the person first unless they allowed changes."
+}

@@ -1,0 +1,40 @@
+{
+  "name": "linear",
+  "displayName": "Linear",
+  "purpose": "Issues, projects and cycles in Linear",
+  "hosts": [
+    "api.linear.app"
+  ],
+  "connect": {
+    "kind": "apiKey",
+    "apiKey": {
+      "in": "header",
+      "name": "Authorization",
+      "help": "Linear → Settings → Security & access → Personal API keys"
+    }
+  },
+  "policy": {
+    "read": [
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/graphql"
+        ],
+        "body": "^\\s*\\{\\s*\"query\"\\s*:\\s*\"\\s*(query\\b|\\{)"
+      }
+    ],
+    "write": [
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/graphql"
+        ]
+      }
+    ]
+  },
+  "guide": "The Linear GraphQL API (https://developers.linear.app), as the person. A query reads; a mutation is a change and asks the person first.\n\n```sh\ncurl -s -X POST https://api.linear.app/graphql -H 'Content-Type: application/json' -d '{\"query\":\"{ viewer { name assignedIssues(first: 10, filter: {state: {type: {nin: [\\\"completed\\\",\\\"canceled\\\"]}}}) { nodes { identifier title state { name } } } } }\"}'\n```"
+}
