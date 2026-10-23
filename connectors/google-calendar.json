@@ -1,0 +1,29 @@
+{
+  "name": "calendar",
+  "displayName": "Google Calendar",
+  "purpose": "The person's calendars and events",
+  "hosts": ["www.googleapis.com"],
+  "connect": {
+    "kind": "oauth2",
+    "oauth2": {
+      "issuer": "https://accounts.google.com",
+      "clientId": "SET-YOUR-CLIENT-ID.apps.googleusercontent.com",
+      "clientAuth": "post",
+      "scopes": {
+        "read": ["https://www.googleapis.com/auth/calendar.readonly"],
+        "write": ["https://www.googleapis.com/auth/calendar.events"]
+      },
+      "authParams": {"access_type": "offline", "prompt": "consent"}
+    }
+  },
+  "policy": {
+    "read": [
+      {"methods": ["GET"], "paths": ["/calendar/v3/**"]},
+      {"methods": ["POST"], "paths": ["/calendar/v3/freeBusy"]}
+    ],
+    "write": [
+      {"methods": ["POST", "PUT", "PATCH", "DELETE"], "paths": ["/calendar/v3/calendars/*/events", "/calendar/v3/calendars/*/events/**"]}
+    ]
+  },
+  "guide": "The Google Calendar API v3 (https://developers.google.com/calendar/api/v3/reference), as the person.\n\n```sh\ncurl -s 'https://www.googleapis.com/calendar/v3/users/me/calendarList'\ncurl -s \"https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=$(date -u +%Y-%m-%dT%H:%M:%SZ)&singleEvents=true&orderBy=startTime&maxResults=10\"\ncurl -s -X POST https://www.googleapis.com/calendar/v3/freeBusy -d '{\"timeMin\":\"…\",\"timeMax\":\"…\",\"items\":[{\"id\":\"primary\"}]}'\n```\n\nCreating or changing an event asks the person first unless they allowed changes:\n\n```sh\ncurl -s -X POST https://www.googleapis.com/calendar/v3/calendars/primary/events -d '{\"summary\":\"…\",\"start\":{\"dateTime\":\"…\"},\"end\":{\"dateTime\":\"…\"}}'\n```"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "github",
+  "displayName": "GitHub",
+  "purpose": "Repositories, issues and pull requests on github.com",
+  "hosts": ["api.github.com"],
+  "connect": {
+    "kind": "oauth2",
+    "oauth2": {
+      "authorizationEndpoint": "https://github.com/login/oauth/authorize",
+      "tokenEndpoint": "https://github.com/login/oauth/access_token",
+      "clientId": "SET-YOUR-OAUTH-APP-CLIENT-ID",
+      "clientAuth": "post",
+      "scopes": {"read": ["read:user", "read:org"], "write": ["repo"]}
+    }
+  },
+  "policy": {
+    "read": [
+      {"methods": ["GET", "HEAD"], "paths": ["/**"]},
+      {"methods": ["POST"], "paths": ["/graphql"], "body": "^\\s*\\{\\s*\"query\"\\s*:\\s*\"\\s*(query\\b|\\{)"}
+    ],
+    "write": [
+      {"methods": ["POST", "PUT", "PATCH", "DELETE"], "paths": ["/**"]}
+    ]
+  },
+  "cliEnv": {"GH_TOKEN": "connected"},
+  "guide": "The GitHub REST API (https://docs.github.com/rest) and GraphQL API, as the person.\n\n```sh\ncurl -s https://api.github.com/user\ncurl -s 'https://api.github.com/search/issues?q=repo:OWNER/REPO+is:open'\n```\n\nPrivate repositories need the `repo` scope, which GitHub grants only with changes: the person allows changes to give it."
+}

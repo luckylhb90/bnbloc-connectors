@@ -1,0 +1,24 @@
+{
+  "name": "github",
+  "displayName": "GitHub",
+  "purpose": "Repositories, issues and pull requests on github.com",
+  "hosts": ["api.github.com"],
+  "connect": {
+    "kind": "apiKey",
+    "apiKey": {
+      "in": "bearer",
+      "help": "github.com → Settings → Developer settings → Fine-grained personal access tokens; give it the repositories and permissions your agents need"
+    }
+  },
+  "policy": {
+    "read": [
+      {"methods": ["GET", "HEAD"], "paths": ["/**"]},
+      {"methods": ["POST"], "paths": ["/graphql"], "body": "^\\s*\\{\\s*\"query\"\\s*:\\s*\"\\s*(query\\b|\\{)"}
+    ],
+    "write": [
+      {"methods": ["POST", "PUT", "PATCH", "DELETE"], "paths": ["/**"]}
+    ]
+  },
+  "cliEnv": {"GH_TOKEN": "connected"},
+  "guide": "The GitHub REST API (https://docs.github.com/rest) and GraphQL API, as the person.\n\n```sh\ncurl -s https://api.github.com/user\ncurl -s 'https://api.github.com/repos/OWNER/REPO/issues?state=open&per_page=20'\ncurl -s https://api.github.com/repos/OWNER/REPO/pulls/42/files\ncurl -s -X POST https://api.github.com/graphql -d '{\"query\":\"query { viewer { login } }\"}'\n```\n\nChanges (creating an issue, commenting, merging) ask the person first unless they allowed changes:\n\n```sh\ncurl -s -X POST https://api.github.com/repos/OWNER/REPO/issues -d '{\"title\":\"…\",\"body\":\"…\"}'\n```\n\n`gh` works where it trusts the proxy's CA (in the sandbox); on a macOS host use curl."
+}
