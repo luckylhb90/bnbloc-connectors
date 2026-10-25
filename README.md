@@ -13,6 +13,8 @@ it).
 | `connectors/notion.json` | Notion pages and databases | an internal integration's secret |
 | `connectors/linear.json` | Linear GraphQL | a personal API key |
 | `connectors/figma.json` | Figma files and comments | a personal access token |
+| `connectors/okx-demo.json` | OKX demo trading (simulated funds) | an API key, its secret and passphrase; requests signed in headers, `x-simulated-trading: 1` on each |
+| `connectors/bybit-testnet.json` | Bybit testnet (test funds) | an API key and its secret; requests signed in headers |
 | `connectors/google.json` | Google Calendar, Drive, Docs, Sheets, Slides and Gmail | Google OAuth (set `clientId`; the client secret on the admin page) |
 
 Google's APIs share `www.googleapis.com`, and a host belongs to one

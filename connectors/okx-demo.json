@@ -1,0 +1,65 @@
+{
+  "name": "okx-demo",
+  "displayName": "OKX Demo Trading",
+  "purpose": "An OKX demo trading account (simulated funds): market data, balances, orders",
+  "hosts": [
+    "www.okx.com"
+  ],
+  "headers": {
+    "x-simulated-trading": "1"
+  },
+  "connect": {
+    "kind": "apiKey",
+    "apiKey": {
+      "in": "header",
+      "name": "OK-ACCESS-KEY",
+      "help": "OKX → Trade → Demo trading → API (create a demo-trading V5 key with Read and Trade); paste the API key, the secret key and the passphrase you set",
+      "extra": [
+        {
+          "name": "passphrase",
+          "label": "Passphrase",
+          "header": "OK-ACCESS-PASSPHRASE"
+        }
+      ],
+      "sign": {
+        "in": "header",
+        "header": "OK-ACCESS-SIGN",
+        "timestamp": "OK-ACCESS-TIMESTAMP",
+        "timestampFormat": "iso",
+        "encoding": "base64",
+        "payload": "{timestamp}{method}{pathQuery}{body}",
+        "paths": [
+          "/api/v5/account/**",
+          "/api/v5/trade/**",
+          "/api/v5/asset/**",
+          "/api/v5/users/**"
+        ]
+      }
+    }
+  },
+  "policy": {
+    "read": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "paths": [
+          "/api/v5/**"
+        ]
+      }
+    ],
+    "write": [
+      {
+        "methods": [
+          "POST"
+        ],
+        "paths": [
+          "/api/v5/trade/**",
+          "/api/v5/account/**",
+          "/api/v5/asset/**"
+        ]
+      }
+    ]
+  },
+  "guide": "OKX V5 REST API at https://www.okx.com/api/v5, on the person's demo trading account (simulated funds): bnbloc adds `x-simulated-trading: 1` to every request, the person's key and passphrase, and signs account and trading requests. Send requests with no key, signature or timestamp.\n\n```sh\n# Market data\ncurl -s 'https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT'\ncurl -s 'https://www.okx.com/api/v5/market/books?instId=BTC-USDT&sz=5'\n# Balances\ncurl -s 'https://www.okx.com/api/v5/account/balance'\n# Open orders, recent fills\ncurl -s 'https://www.okx.com/api/v5/trade/orders-pending?instType=SPOT'\ncurl -s 'https://www.okx.com/api/v5/trade/fills?instType=SPOT'\n# A limit order, then its cancellation\ncurl -s -X POST 'https://www.okx.com/api/v5/trade/order' -H 'Content-Type: application/json' \\\n  -d '{\"instId\":\"BTC-USDT\",\"tdMode\":\"cash\",\"side\":\"buy\",\"ordType\":\"limit\",\"px\":\"20000\",\"sz\":\"0.001\"}'\ncurl -s -X POST 'https://www.okx.com/api/v5/trade/cancel-order' -H 'Content-Type: application/json' -d '{\"instId\":\"BTC-USDT\",\"ordId\":\"ORDER_ID\"}'\n```\n\nAnswers are `{\"code\":\"0\",\"data\":[…],\"msg\":\"\"}`; a `code` other than \"0\" is an error. Placing or cancelling an order asks the person first unless they allowed changes."
+}
