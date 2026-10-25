@@ -55,5 +55,6 @@
       }
     ]
   },
+  "test": {"method": "GET", "path": "/v5/account/wallet-balance?accountType=UNIFIED"},
   "guide": "Bybit V5 REST API at https://api-testnet.bybit.com/v5, on the person's testnet account (test funds): bnbloc adds the person's key and signs account and trading requests. Send requests with no key, signature or timestamp.\n\n```sh\n# Market data\ncurl -s 'https://api-testnet.bybit.com/v5/market/tickers?category=spot&symbol=BTCUSDT'\n# Balances\ncurl -s 'https://api-testnet.bybit.com/v5/account/wallet-balance?accountType=UNIFIED'\n# Open orders\ncurl -s 'https://api-testnet.bybit.com/v5/order/realtime?category=spot'\n# A limit order, then its cancellation\ncurl -s -X POST 'https://api-testnet.bybit.com/v5/order/create' -H 'Content-Type: application/json' \\\n  -d '{\"category\":\"spot\",\"symbol\":\"BTCUSDT\",\"side\":\"Buy\",\"orderType\":\"Limit\",\"qty\":\"0.001\",\"price\":\"20000\"}'\ncurl -s -X POST 'https://api-testnet.bybit.com/v5/order/cancel' -H 'Content-Type: application/json' -d '{\"category\":\"spot\",\"symbol\":\"BTCUSDT\",\"orderId\":\"ORDER_ID\"}'\n```\n\nAnswers are `{\"retCode\":0,\"retMsg\":\"OK\",\"result\":{…}}`; a `retCode` other than 0 is an error. Placing or cancelling an order asks the person first unless they allowed changes."
 }

@@ -20,5 +20,6 @@
     ]
   },
   "cliEnv": {"GH_TOKEN": "connected"},
+  "test": {"method": "GET", "path": "/user"},
   "guide": "The GitHub REST API (https://docs.github.com/rest) and GraphQL API, as the person.\n\n```sh\ncurl -s https://api.github.com/user\ncurl -s 'https://api.github.com/repos/OWNER/REPO/issues?state=open&per_page=20'\ncurl -s https://api.github.com/repos/OWNER/REPO/pulls/42/files\ncurl -s -X POST https://api.github.com/graphql -d '{\"query\":\"query { viewer { login } }\"}'\n```\n\nChanges (creating an issue, commenting, merging) ask the person first unless they allowed changes:\n\n```sh\ncurl -s -X POST https://api.github.com/repos/OWNER/REPO/issues -d '{\"title\":\"…\",\"body\":\"…\"}'\n```\n\n`gh` works where it trusts the proxy's CA (in the sandbox); on a macOS host use curl."
 }

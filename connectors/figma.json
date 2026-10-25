@@ -37,5 +37,6 @@
       }
     ]
   },
+  "test": {"method": "GET", "path": "/v1/me"},
   "guide": "The Figma REST API (https://www.figma.com/developers/api), as the person.\n\n```sh\ncurl -s https://api.figma.com/v1/me\ncurl -s 'https://api.figma.com/v1/files/FILE_KEY?depth=2'\ncurl -s 'https://api.figma.com/v1/images/FILE_KEY?ids=NODE_ID&format=png'\ncurl -s https://api.figma.com/v1/files/FILE_KEY/comments\n```\n\nA comment asks the person first unless they allowed changes."
 }
